@@ -5,6 +5,7 @@ import * as sessionController from '../controllers/sessionController';
 import * as userController from '../controllers/userController';
 
 const router = express.Router();
+// base url: http://localhost:5000/api/
 
 // Availability routes
 router.get('/availability', auth, availabilityController.getUserAvailability);

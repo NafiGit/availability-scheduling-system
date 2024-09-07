@@ -1,3 +1,5 @@
+// routes/routeCollector.ts
+
 import express from 'express';
 import { auth, adminAuth } from '../middleware/auth';
 import * as availabilityController from '../controllers/availabilityController';
@@ -23,7 +25,7 @@ router.delete('/session/:id', auth, sessionController.deleteSession);
 router.get('/session/all', adminAuth, sessionController.getAllSessions);
 
 // User routes
-router.get('/user', adminAuth, userController.getAllUsers);
+router.get('/users', adminAuth, userController.getAllUsers);
 router.get('/user/:id', adminAuth, userController.getUserById);
 router.patch('/user', auth, userController.updateUser);
 router.delete('/user', auth, userController.deleteUser);

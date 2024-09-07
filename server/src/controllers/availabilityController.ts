@@ -1,9 +1,14 @@
+// controllers/availabilityController.ts
+
 import { Response } from 'express';
 import { AuthRequest } from '../middleware/auth';
 import Availability from '../models/Availability';
 
 export const getUserAvailability = async (req: AuthRequest, res: Response) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({ error: 'User not authenticated' });
+    }
     const availabilities = await Availability.find({ user: req.user._id });
     res.json(availabilities);
   } catch (error) {
@@ -13,6 +18,9 @@ export const getUserAvailability = async (req: AuthRequest, res: Response) => {
 
 export const createAvailability = async (req: AuthRequest, res: Response) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({ error: 'User not authenticated' });
+    }
     const { start, end, duration } = req.body;
     const availability = new Availability({
       user: req.user._id,
@@ -29,6 +37,9 @@ export const createAvailability = async (req: AuthRequest, res: Response) => {
 
 export const updateAvailability = async (req: AuthRequest, res: Response) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({ error: 'User not authenticated' });
+    }
     const updates = Object.keys(req.body);
     const allowedUpdates = ['start', 'end', 'duration'];
     const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
@@ -55,6 +66,9 @@ export const updateAvailability = async (req: AuthRequest, res: Response) => {
 
 export const deleteAvailability = async (req: AuthRequest, res: Response) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({ error: 'User not authenticated' });
+    }
     const availability = await Availability.findOneAndDelete({ _id: req.params.id, user: req.user._id });
     if (!availability) {
       return res.status(404).json({ error: 'Availability not found' });

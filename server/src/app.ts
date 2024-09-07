@@ -1,11 +1,10 @@
+// app.ts
+
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/auth';
-// import userRoutes from './routes/users';
-// import availabilityRoutes from './routes/availabilities';
-// import sessionRoutes from './routes/sessions';
 import { errorHandler } from './middleware/errorHandler';
 import routeCollector from './routes/routeCollector';
 
@@ -23,9 +22,6 @@ mongoose.connect(process.env.MONGODB_URI as string)
 
 // Routes
 app.use('/api/auth', authRoutes);
-// app.use('/api/users', userRoutes);
-// app.use('/api/availabilities', availabilityRoutes);
-// app.use('/api/sessions', sessionRoutes);
 app.use('/api', routeCollector);
 
 // Error handling middleware

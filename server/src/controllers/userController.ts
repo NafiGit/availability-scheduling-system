@@ -49,6 +49,13 @@ export const getUserById = async (req: AuthRequest, res: Response) => {
 
 export const updateUser = async (req: AuthRequest, res: Response) => {
   try {
+    const userId = req.params.id;
+
+    // Validate if the ID is a valid MongoDB ObjectId
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ error: 'Invalid user ID format' });
+    }
+
     const updates = Object.keys(req.body);
     const allowedUpdates = ['email', 'password'];
     const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
@@ -57,9 +64,14 @@ export const updateUser = async (req: AuthRequest, res: Response) => {
       return res.status(400).json({ error: 'Invalid updates' });
     }
 
-    const user = await User.findById(req.user?._id);
+    const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Only allow the admin to update users
+    if (!req.user?.isAdmin) {
+      return res.status(403).json({ error: 'Admin rights required to update this user' });
     }
 
     updates.forEach((update) => {
@@ -77,12 +89,26 @@ export const updateUser = async (req: AuthRequest, res: Response) => {
   }
 };
 
+
 export const deleteUser = async (req: AuthRequest, res: Response) => {
   try {
-    const user = await User.findByIdAndDelete(req.user?._id);
+    const userId = req.params.id;
+
+    // Validate if the ID is a valid MongoDB ObjectId
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ error: 'Invalid user ID format' });
+    }
+
+    // Only allow the admin to delete users
+    if (!req.user?.isAdmin) {
+      return res.status(403).json({ error: 'Admin rights required to delete this user' });
+    }
+
+    const user = await User.findByIdAndDelete(userId);
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
+
     res.json({ message: 'User deleted successfully' });
   } catch (error) {
     res.status(500).json({ error: 'Error deleting user' });

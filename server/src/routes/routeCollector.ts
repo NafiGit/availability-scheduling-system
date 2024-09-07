@@ -18,16 +18,16 @@ router.get('/availability/all', adminAuth, availabilityController.getAllAvailabi
 
 // Session routes
 router.post('/session', auth, sessionController.createSession);
+router.get('/session/all', adminAuth, sessionController.getAllSessions);
 router.get('/session', auth, sessionController.getUserSessions);
 router.get('/session/:id', auth, sessionController.getSessionById);
 router.patch('/session/:id', auth, sessionController.updateSession);
 router.delete('/session/:id', auth, sessionController.deleteSession);
-router.get('/session/all', adminAuth, sessionController.getAllSessions);
 
 // User routes
 router.get('/users', adminAuth, userController.getAllUsers);
-router.get('/user/:id', adminAuth, userController.getUserById);
-router.patch('/user', auth, userController.updateUser);
-router.delete('/user', auth, userController.deleteUser);
+router.get('/user/:id', auth, userController.getUserById);
+router.patch('/user/:id', auth, userController.updateUser);
+router.delete('/user/:id', auth, userController.deleteUser);
 
 export default router;

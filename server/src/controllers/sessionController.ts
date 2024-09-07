@@ -1,10 +1,9 @@
-// controllers/sessionController.ts
-
 import { Response } from 'express';
 import { AuthRequest } from '../middleware/auth';
 import Session from '../models/Session';
 import Availability from '../models/Availability';
 import { sendSessionNotification } from '../services/emailService';
+import { isValidObjectId } from 'mongoose';
 
 export const createSession = async (req: AuthRequest, res: Response) => {
   try {
@@ -12,6 +11,14 @@ export const createSession = async (req: AuthRequest, res: Response) => {
       return res.status(401).json({ error: 'User not authenticated' });
     }
     const { availabilityId, type, attendees } = req.body;
+
+    if (!availabilityId || !type || !attendees) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    if (!isValidObjectId(availabilityId)) {
+      return res.status(400).json({ error: 'Invalid availability ID' });
+    }
 
     const availability = await Availability.findById(availabilityId);
     if (!availability) {
@@ -44,7 +51,8 @@ export const createSession = async (req: AuthRequest, res: Response) => {
 
     res.status(201).json(session);
   } catch (error) {
-    res.status(400).json({ error: 'Error creating session' });
+    console.error('Error in createSession:', error);
+    res.status(500).json({ error: 'An unexpected error occurred while creating the session' });
   }
 };
 
@@ -56,7 +64,8 @@ export const getUserSessions = async (req: AuthRequest, res: Response) => {
     const sessions = await Session.find({ user: req.user._id });
     res.json(sessions);
   } catch (error) {
-    res.status(500).json({ error: 'Error fetching user sessions' });
+    console.error('Error in getUserSessions:', error);
+    res.status(500).json({ error: 'An unexpected error occurred while fetching user sessions' });
   }
 };
 
@@ -65,13 +74,21 @@ export const getSessionById = async (req: AuthRequest, res: Response) => {
     if (!req.user) {
       return res.status(401).json({ error: 'User not authenticated' });
     }
-    const session = await Session.findOne({ _id: req.params.id, user: req.user._id });
+
+    const { id } = req.params;
+
+    if (!isValidObjectId(id)) {
+      return res.status(400).json({ error: 'Invalid session ID' });
+    }
+
+    const session = await Session.findOne({ _id: id, user: req.user._id });
     if (!session) {
       return res.status(404).json({ error: 'Session not found' });
     }
     res.json(session);
   } catch (error) {
-    res.status(500).json({ error: 'Error fetching session' });
+    console.error('Error in getSessionById:', error);
+    res.status(500).json({ error: 'An unexpected error occurred while fetching the session' });
   }
 };
 
@@ -80,6 +97,13 @@ export const updateSession = async (req: AuthRequest, res: Response) => {
     if (!req.user) {
       return res.status(401).json({ error: 'User not authenticated' });
     }
+
+    const { id } = req.params;
+
+    if (!isValidObjectId(id)) {
+      return res.status(400).json({ error: 'Invalid session ID' });
+    }
+
     const updates = Object.keys(req.body);
     const allowedUpdates = ['type', 'attendees'];
     const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
@@ -88,7 +112,7 @@ export const updateSession = async (req: AuthRequest, res: Response) => {
       return res.status(400).json({ error: 'Invalid updates' });
     }
 
-    const session = await Session.findOne({ _id: req.params.id, user: req.user._id });
+    const session = await Session.findOne({ _id: id, user: req.user._id });
     if (!session) {
       return res.status(404).json({ error: 'Session not found' });
     }
@@ -103,7 +127,8 @@ export const updateSession = async (req: AuthRequest, res: Response) => {
 
     res.json(session);
   } catch (error) {
-    res.status(400).json({ error: 'Error updating session' });
+    console.error('Error in updateSession:', error);
+    res.status(500).json({ error: 'An unexpected error occurred while updating the session' });
   }
 };
 
@@ -112,7 +137,14 @@ export const deleteSession = async (req: AuthRequest, res: Response) => {
     if (!req.user) {
       return res.status(401).json({ error: 'User not authenticated' });
     }
-    const session = await Session.findOneAndDelete({ _id: req.params.id, user: req.user._id });
+
+    const { id } = req.params;
+
+    if (!isValidObjectId(id)) {
+      return res.status(400).json({ error: 'Invalid session ID' });
+    }
+
+    const session = await Session.findOneAndDelete({ _id: id, user: req.user._id });
     if (!session) {
       return res.status(404).json({ error: 'Session not found' });
     }
@@ -126,15 +158,20 @@ export const deleteSession = async (req: AuthRequest, res: Response) => {
 
     res.json({ message: 'Session deleted successfully' });
   } catch (error) {
-    res.status(500).json({ error: 'Error deleting session' });
+    console.error('Error in deleteSession:', error);
+    res.status(500).json({ error: 'An unexpected error occurred while deleting the session' });
   }
 };
 
 export const getAllSessions = async (req: AuthRequest, res: Response) => {
   try {
+    if (!req.user?.isAdmin) {
+      return res.status(403).json({ error: 'Access denied. Admin rights required.' });
+    }
     const sessions = await Session.find({}).populate('user', 'email');
     res.json(sessions);
   } catch (error) {
-    res.status(500).json({ error: 'Error fetching all sessions' });
+    console.error('Error in getAllSessions:', error);
+    res.status(500).json({ error: 'An unexpected error occurred while fetching all sessions' });
   }
 };

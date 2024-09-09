@@ -4,7 +4,6 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import cookieParser from 'cookie-parser';
 import { errorHandler } from './middleware/errorHandler';
 import routeCollector from './routes/routeCollector';
 
@@ -13,11 +12,10 @@ dotenv.config();
 const app = express();
 
 app.use(cors({
-  origin: process.env.CLIENT_URL,
+  origin: "http://localhost:3000",
   credentials: true,
 }));
 app.use(express.json());
-app.use(cookieParser());
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI as string)

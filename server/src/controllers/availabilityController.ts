@@ -5,9 +5,6 @@ import { isValidObjectId } from 'mongoose';
 
 export const getUserAvailability = async (req: AuthRequest, res: Response) => {
   try {
-    if (!req.user) {
-      return res.status(401).json({ error: 'User not authenticated' });
-    }
     const availabilities = await Availability.find({ user: req.user._id });
     res.json(availabilities);
   } catch (error) {
@@ -18,9 +15,6 @@ export const getUserAvailability = async (req: AuthRequest, res: Response) => {
 
 export const createAvailability = async (req: AuthRequest, res: Response) => {
   try {
-    if (!req.user) {
-      return res.status(401).json({ error: 'User not authenticated' });
-    }
     const { start, end, duration } = req.body;
 
     if (!start || !end || !duration) {
@@ -58,10 +52,6 @@ export const createAvailability = async (req: AuthRequest, res: Response) => {
 
 export const updateAvailability = async (req: AuthRequest, res: Response) => {
   try {
-    if (!req.user) {
-      return res.status(401).json({ error: 'User not authenticated' });
-    }
-
     const { id } = req.params;
 
     if (!isValidObjectId(id)) {
@@ -103,10 +93,6 @@ export const updateAvailability = async (req: AuthRequest, res: Response) => {
 
 export const deleteAvailability = async (req: AuthRequest, res: Response) => {
   try {
-    if (!req.user) {
-      return res.status(401).json({ error: 'User not authenticated' });
-    }
-
     const { id } = req.params;
 
     if (!isValidObjectId(id)) {
@@ -126,7 +112,7 @@ export const deleteAvailability = async (req: AuthRequest, res: Response) => {
 
 export const getAllAvailabilities = async (req: AuthRequest, res: Response) => {
   try {
-    if (!req.user?.isAdmin) {
+    if (!req.user.isAdmin) {
       return res.status(403).json({ error: 'Access denied. Admin rights required.' });
     }
     const availabilities = await Availability.find({}).populate('user', 'email');

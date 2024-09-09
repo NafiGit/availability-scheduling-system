@@ -46,21 +46,17 @@ export const login = async (req: Request, res: Response) => {
       { expiresIn: '30d' }
     );
 
-    // Set the token as an HTTP-only cookie
-    res.cookie('token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+    res.json({ 
+      token,
+      user: { id: user._id, email: user.email, isAdmin: user.isAdmin } 
     });
-
-    res.json({ user: { id: user._id, email: user.email, isAdmin: user.isAdmin } });
   } catch (error) {
     res.status(500).json({ error: 'Error logging in' });
   }
 };
 
 export const logout = (req: Request, res: Response) => {
-  res.clearCookie('token');
+  // With token-based auth, logout is handled client-side
   res.json({ message: 'Logged out successfully' });
 };
 
@@ -76,3 +72,4 @@ export const checkAuth = async (req: AuthRequest, res: Response) => {
     res.status(500).json({ error: 'Error checking authentication' });
   }
 };
+

@@ -1,3 +1,5 @@
+// src/types/index.ts
+
 export interface User {
     id: string;
     email: string;
@@ -5,8 +7,8 @@ export interface User {
   }
   
   export interface Availability {
-    id: string;
     user: string;
+    id: string;
     start: Date;
     end: Date;
     duration: number;

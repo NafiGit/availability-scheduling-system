@@ -1,15 +1,17 @@
+// src/pages/UserAvailability.jsx
+
 import React, { useState } from 'react';
 import AvailabilityCalendar from '../components/AvailabilityCalendar';
 import TimeSlotSelector from '../components/TimeSlotSelector';
 
-const UserAvailability: React.FC = () => {
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+const UserAvailability = () => {
+  const [selectedDate, setSelectedDate] = useState(null);
 
-  const handleDateSelect = (date: Date) => {
+  const handleDateSelect = (date) => {
     setSelectedDate(date);
   };
 
-  const handleTimeSlotSelect = (start: Date, end: Date) => {
+  const handleTimeSlotSelect = (start, end) => {
     // TODO: Send availability to backend
     console.log('Selected time slot:', { start, end });
   };
@@ -26,3 +28,5 @@ const UserAvailability: React.FC = () => {
 };
 
 export default UserAvailability;
+
+

@@ -1,23 +1,13 @@
+// src/components/SessionCreator.tsx
+
 import React, { useState } from 'react';
 
-interface Availability {
-  id: string;
-  start: Date;
-  end: Date;
-}
-
-interface SessionCreatorProps {
-  userId: string;
-  availabilities: Availability[];
-  onSessionCreate: (session: any) => void;
-}
-
-const SessionCreator: React.FC<SessionCreatorProps> = ({ userId, availabilities, onSessionCreate }) => {
-  const [selectedAvailability, setSelectedAvailability] = useState<string>('');
+const SessionCreator= ({ userId, availabilities, onSessionCreate }) => {
+  const [selectedAvailability, setSelectedAvailability] = useState('');
   const [sessionType, setSessionType] = useState<'one-on-one' | 'group'>('one-on-one');
   const [attendees, setAttendees] = useState<string>('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     const availability = availabilities.find(a => a.id === selectedAvailability);
     if (!availability) return;
@@ -49,7 +39,7 @@ const SessionCreator: React.FC<SessionCreatorProps> = ({ userId, availabilities,
       </select>
       <select
         value={sessionType}
-        onChange={(e) => setSessionType(e.target.value as 'one-on-one' | 'group')}
+        onChange={(e) => setSessionType(e.target.value)}
         required
       >
         <option value="one-on-one">One-on-One</option>
@@ -68,3 +58,4 @@ const SessionCreator: React.FC<SessionCreatorProps> = ({ userId, availabilities,
 };
 
 export default SessionCreator;
+

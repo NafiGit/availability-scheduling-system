@@ -1,23 +1,25 @@
+// src/pages/AdminDashboard.tsx
+
 import React, { useState } from 'react';
 import UserList from '../components/UserList';
 import AdminCalendar from '../components/AdminCalendar';
 import SessionCreator from '../components/SessionCreator';
-import { useUser } from '../contexts/UserContext';
-import { useAvailability } from '../contexts/AvailabilityContext';
-import { useSession } from '../contexts/SessionContext';
+import { useUser } from '../context/UserContext';
+import { useAvailability } from '../context/AvailabilityContext';
+import { useSession } from '../context/SessionContext';
 
-const AdminDashboard: React.FC = () => {
-  const [selectedUser, setSelectedUser] = useState<string | null>(null);
+const AdminDashboard = () => {
+  const [selectedUser, setSelectedUser] = useState(null);
   const { users } = useUser();
   const { availabilities } = useAvailability();
-  const { sessions, addSession } = useSession();
+  const { sessions, createSession } = useSession();
 
-  const handleUserSelect = (userId: string) => {
+  const handleUserSelect = (userId) => {
     setSelectedUser(userId);
   };
 
-  const handleSessionCreate = (session: any) => {
-    addSession(session);
+  const handleSessionCreate = (session) => {
+    createSession(session);
   };
 
   return (
@@ -31,11 +33,11 @@ const AdminDashboard: React.FC = () => {
         <div>
           <h2>User Availability</h2>
           <AdminCalendar
-            availabilities={availabilities.filter(a => a.user === selectedUser)}
+            availabilities={availabilities.filter((a) => a.user === selectedUser)}
           />
           <SessionCreator
             userId={selectedUser}
-            availabilities={availabilities.filter(a => a.user === selectedUser)}
+            availabilities={availabilities.filter((a) => a.user === selectedUser)}
             onSessionCreate={handleSessionCreate}
           />
         </div>
@@ -49,3 +51,5 @@ const AdminDashboard: React.FC = () => {
 };
 
 export default AdminDashboard;
+
+

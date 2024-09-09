@@ -1,0 +1,117 @@
+/* src/styles/calendly-style.css */
+
+:root {
+  --primary-color: #006bff;
+  --secondary-color: #f8f8f8;
+  --text-color: #333;
+  --border-color: #ddd;
+}
+
+body {
+  font-family: "Arial", sans-serif;
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+.dashboard-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.dashboard-title {
+  color: var(--primary-color);
+  text-align: center;
+}
+
+.dashboard-content {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.availability-section,
+.sessions-section {
+  width: 48%;
+}
+
+.availability-calendar .react-calendar {
+  width: 100%;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+}
+
+.has-availability {
+  background-color: var(--primary-color);
+  border-radius: 50%;
+  width: 8px;
+  height: 8px;
+  margin: 0 auto;
+}
+
+.time-slot-selector {
+  margin-top: 20px;
+}
+
+.time-inputs {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.time-inputs select {
+  padding: 5px;
+  border-radius: 3px;
+  border: 1px solid var(--border-color);
+}
+
+.add-timeslot-btn {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.existing-availabilities {
+  margin-top: 20px;
+}
+
+.availability-item {
+  background-color: var(--secondary-color);
+  padding: 10px;
+  margin-bottom: 5px;
+  border-radius: 3px;
+}
+
+.sessions-list ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.session-item {
+  background-color: var(--secondary-color);
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.session-time {
+  font-weight: bold;
+}
+
+.session-type {
+  color: var(--primary-color);
+}
+
+.loading,
+.error {
+  text-align: center;
+  margin-top: 50px;
+  font-size: 18px;
+}
+
+.error {
+  color: red;
+}

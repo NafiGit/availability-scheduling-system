@@ -1,16 +1,18 @@
+// src/components/Navbar.tsx
+
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../context/AuthContext';
 
-const Navbar: React.FC = () => {
-  const { isAuthenticated, isAdmin, logout } = useAuth();
+const Navbar = () => {
+  const { isAuthenticated, logout } = useAuth();
 
   return (
     <nav>
       <ul>
         {isAuthenticated ? (
           <>
-            <li><Link to={isAdmin ? "/admin" : "/dashboard"}>Dashboard</Link></li>
+            <li><Link to="/dashboard">Dashboard</Link></li>
             <li><button onClick={logout}>Logout</button></li>
           </>
         ) : (
@@ -25,3 +27,4 @@ const Navbar: React.FC = () => {
 };
 
 export default Navbar;
+

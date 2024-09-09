@@ -127,6 +127,7 @@ export const getAllAvailabilities = async (req: AuthRequest, res: Response) => {
 };
 
 export const getAvailabilitiesByDate = async (req: AuthRequest, res: Response) => {
+  console.log('getAvailabilitiesByDate called with date:', req.params.date);
   try {
     const { date } = req.params;
     const startOfDay = new Date(date);

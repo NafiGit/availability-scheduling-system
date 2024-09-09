@@ -1,10 +1,8 @@
-// src/pages/UserDashboard.jsx
-
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import AvailabilityCalendar from "../components/AvailabilityCalendar";
 import SessionsList from "../components/SessionsList";
+import AvailabilityModal from "../components/AvailabilityModal";
 import { useAvailability } from "../context/AvailabilityContext";
-import { useSession } from "../context/SessionContext";
 import "../styles/calendly-style.css";
 
 const UserDashboard = () => {
@@ -13,22 +11,28 @@ const UserDashboard = () => {
     loading: availabilityLoading,
     error: availabilityError,
     getUserAvailability,
+    selectedDate,
+    setSelectedDate
   } = useAvailability();
-  // const {
-  //   sessions,
-  //   loading: sessionLoading,
-  //   error: sessionError,
-  //   getUserSessions,
-  // } = useSession();
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
     getUserAvailability();
-    // getUserSessions();
   }, []);
 
+  const handleDateClick = (date) => {
+    setSelectedDate(date);
+    setIsModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
+    setSelectedDate(null);
+  };
+
   if (availabilityLoading) return <div className="loading">Loading...</div>;
-  if (availabilityError)
-    return <div className="error">An error occurred. Please try again.</div>;
+  if (availabilityError) return <div className="error">An error occurred. Please try again.</div>;
 
   return (
     <div className="dashboard-container">
@@ -36,13 +40,20 @@ const UserDashboard = () => {
       <div className="dashboard-content">
         <div className="availability-section">
           <h2>Set Your Availability</h2>
-          <AvailabilityCalendar availabilities={availabilities} />
+          <AvailabilityCalendar 
+            availabilities={availabilities} 
+            onDateClick={handleDateClick}
+          />
         </div>
         <div className="sessions-section">
           <h2>Your Sessions</h2>
           {/* <SessionsList sessions={sessions} /> */}
         </div>
       </div>
+      <AvailabilityModal 
+        isOpen={isModalVisible} 
+        onClose={handleCloseModal} 
+      />
     </div>
   );
 };

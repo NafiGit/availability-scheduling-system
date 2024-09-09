@@ -4,8 +4,8 @@ import React, { useState, useCallback } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import '../styles/calendly-style.css';
-import AvailabilityModal from './AvailabilityModal';
 import { useAvailability } from '../context/AvailabilityContext';
+import AvailabilityModal from './AvailabilityModal';
 
 const AvailabilityCalendar = ({ availabilities }) => {
   const { selectedDate, setSelectedDate } = useAvailability();
@@ -20,15 +20,10 @@ const AvailabilityCalendar = ({ availabilities }) => {
     }
   }, [availabilities]);
 
-  const handleDateClick = useCallback((date) => {
+  const handleDateClick = (date) => {
     setSelectedDate(date);
     setIsModalOpen(true);
-  }, [setSelectedDate]);
-
-  const handleCloseModal = useCallback(() => {
-    setIsModalOpen(false);
-    setSelectedDate(null);
-  }, [setSelectedDate]);
+  };
 
   return (
     <div className="availability-calendar">
@@ -38,7 +33,10 @@ const AvailabilityCalendar = ({ availabilities }) => {
         value={selectedDate || new Date()} 
         tileContent={tileContent}
       />
-      {isModalOpen && <AvailabilityModal isOpen={isModalOpen} onClose={handleCloseModal} />}
+      <AvailabilityModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+      />
     </div>
   );
 };

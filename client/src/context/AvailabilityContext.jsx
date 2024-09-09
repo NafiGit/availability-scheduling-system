@@ -1,3 +1,5 @@
+// src/context/AvailabilityContext.jsx
+
 import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "./AuthContext";
@@ -16,6 +18,7 @@ export const useAvailability = () => {
 
 export const AvailabilityProvider = ({ children }) => {
   const [availabilities, setAvailabilities] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const { user, logout } = useAuth();
@@ -44,15 +47,13 @@ export const AvailabilityProvider = ({ children }) => {
       if (error.response.status === 401) {
         setError("Your session has expired. Please log in again.");
         // logout();
+      } else if (error.response.status === 400) {
+        setError(error.response.data.error || "Invalid data. Please check your input and try again.");
       } else {
-        setError(
-          error.response.data.error || "An error occurred. Please try again."
-        );
+        setError(error.response.data.error || "An error occurred. Please try again.");
       }
     } else if (error.request) {
-      setError(
-        "No response received from the server. Please check your internet connection."
-      );
+      setError("No response received from the server. Please check your internet connection.");
     } else {
       setError("An unexpected error occurred. Please try again.");
     }
@@ -76,13 +77,17 @@ export const AvailabilityProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      console.log("Sending availability data:", availability); // Log the data being sent
-      const response = await api.post("/availability", availability);
+      console.log("Sending availability data:", availability);
+      const response = await api.post("/availability", {
+        start: availability.start,
+        end: availability.end,
+        duration: availability.duration
+      });
       setAvailabilities([...availabilities, response.data]);
     } catch (error) {
       handleApiError(error, "Error creating availability:");
       if (error.response && error.response.data) {
-        console.log("Server error response:", error.response.data); // Log the server's error response
+        console.log("Server error response:", error.response.data);
       }
     } finally {
       setLoading(false);
@@ -130,6 +135,20 @@ export const AvailabilityProvider = ({ children }) => {
     }
   };
 
+  const getAvailabilitiesByDate = async (date) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await api.get(`/availability/date/${date.toISOString().split('T')[0]}`);
+      return response.data;
+    } catch (error) {
+      handleApiError(error, "Error fetching availabilities for date:");
+      return [];
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (user) {
       getUserAvailability();
@@ -138,6 +157,8 @@ export const AvailabilityProvider = ({ children }) => {
 
   const value = {
     availabilities,
+    selectedDate,
+    setSelectedDate,
     loading,
     error,
     getUserAvailability,
@@ -145,6 +166,7 @@ export const AvailabilityProvider = ({ children }) => {
     updateAvailability,
     deleteAvailability,
     getAllAvailabilities,
+    getAvailabilitiesByDate,
   };
 
   return (

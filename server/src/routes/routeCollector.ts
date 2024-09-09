@@ -23,6 +23,7 @@ router.post('/availability', auth, availabilityController.createAvailability);
 router.patch('/availability/:id', auth, availabilityController.updateAvailability);
 router.delete('/availability/:id', auth, availabilityController.deleteAvailability);
 router.get('/availability/all', adminAuth, availabilityController.getAllAvailabilities);
+router.get('/availability/date/:date', auth, availabilityController.getAvailabilitiesByDate);
 
 // Session routes
 router.post('/session', auth, sessionController.createSession);

@@ -33,7 +33,7 @@ export const SessionProvider = ({ children }) => {
     if (error.response) {
       if (error.response.status === 401) {
         setError("Your session has expired. Please log in again.");
-        logout(); // Log out the user if the token is invalid or expired
+        // logout(); // Log out the user if the token is invalid or expired
       } else {
         setError(
           error.response.data.message || "An error occurred. Please try again."

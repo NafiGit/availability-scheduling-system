@@ -151,10 +151,13 @@ availability-scheduling-system/
    # Start the server
    cd server
    npm start
+   ```
 
    # Start the client
+   ```bash
    cd ../client
    npm start
+   ```
    Open your browser and navigate to http://localhost:3000.
    ````
 
